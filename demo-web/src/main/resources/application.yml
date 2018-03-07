@@ -1,0 +1,18 @@
+# 端口
+server.port: 8081
+
+# 应用名-注册的服务名
+spring:
+  application:
+    name: hello
+# 定义应用环境-决定加载哪个application-${spring.profiles.active}.yml配置文件
+  profiles:
+    active: dev
+
+# actuator info端点信息，访问URI：/actuator/info
+info:
+  app:
+    name: spring-boot-hello
+    version: 0.0.1-SNAPSHOT
+    active: ${spring.profiles.active}
+
