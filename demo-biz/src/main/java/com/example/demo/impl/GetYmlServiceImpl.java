@@ -2,6 +2,7 @@ package com.example.demo.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.GetYmlService;
+import com.example.demo.HelloVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,10 @@ public class GetYmlServiceImpl implements GetYmlService {
         js.put("bigNumber", bigNumber);
         js.put("tinyInt", tinyInt);
         js.put("randomValue", randomValue);
+        HelloVO helloVO = new HelloVO();
+        helloVO.setName("mao");
+        helloVO.setAge(1);
+        js.put("helloVO", helloVO);
         return js;
     }
 }
