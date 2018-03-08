@@ -8,6 +8,7 @@
 buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
+        springCloudVersion = 'Finchley.M8'
     }
     repositories {
         mavenLocal()
