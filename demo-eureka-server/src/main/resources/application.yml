@@ -1,0 +1,12 @@
+# 端口
+server:
+  port: 1111
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    # 不向注册中心注册自己
+    register-with-eureka: false
+    # 不需要检索服务
+    fetch-registry: false
