@@ -16,3 +16,17 @@ info:
     version: 0.0.1-SNAPSHOT
     active: ${spring.profiles.active}
 
+# ${random} 产生随机数
+com:
+  jeferry:
+    # 随机字符串
+    value: ${random.value}
+    # 随机int
+    number: ${random.int}
+    # 随机long
+    bigNumber: ${random.long}
+    # 10以内随机int
+    tinyInt: ${random.int(10)}
+    # 10-20随机数
+    randomValue: ${random.int(10,20)}
+
