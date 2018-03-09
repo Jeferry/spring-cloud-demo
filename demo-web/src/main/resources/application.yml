@@ -12,7 +12,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
   # 注册eureka的应用名
   instance:
     appname: hello-service

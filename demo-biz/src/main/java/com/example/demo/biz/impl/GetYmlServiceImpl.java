@@ -1,8 +1,8 @@
-package com.example.demo.impl;
+package com.example.demo.biz.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.GetYmlService;
-import com.example.demo.HelloVO;
+import com.example.demo.biz.GetYmlService;
+import com.example.demo.modules.HelloVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

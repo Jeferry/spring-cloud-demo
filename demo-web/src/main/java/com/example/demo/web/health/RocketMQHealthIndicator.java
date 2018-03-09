@@ -2,7 +2,7 @@
  * YOUTU SOFTWARE Inc.
  * Copyright (c) 2016-2018 All Rights Reserved.
  */
-package com.example.demo.health;
+package com.example.demo.web.health;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;

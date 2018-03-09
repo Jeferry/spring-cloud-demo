@@ -1,9 +1,8 @@
-package com.example.demo.web;
+package com.example.demo.web.client;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.GetYmlService;
+import com.example.demo.biz.GetYmlService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,6 +1,6 @@
-package com.example.demo;
+package com.example.demo.web;
 
-import com.example.demo.web.WelcomeController;
+import com.example.demo.web.index.WelcomeController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

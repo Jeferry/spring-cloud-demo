@@ -2,7 +2,7 @@
  * YOUTU SOFTWARE Inc.
  * Copyright (c) 2016-2018 All Rights Reserved.
  */
-package com.example.demo.client;
+package com.example.demo.web.client;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
