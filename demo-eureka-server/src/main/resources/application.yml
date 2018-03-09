@@ -10,3 +10,10 @@ eureka:
     register-with-eureka: false
     # 不需要检索服务
     fetch-registry: false
+    #${}方式为引用变量，这里指代Eureka服务注册地址
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: eureka-server

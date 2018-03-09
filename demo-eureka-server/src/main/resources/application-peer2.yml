@@ -1,0 +1,19 @@
+# 端口
+server:
+  port: 1112
+
+eureka:
+  instance:
+    hostname: peer2
+  client:
+    # 向注册中心注册自己
+    register-with-eureka: true
+    # 需要检索服务
+    fetch-registry: false
+    # 注册中心地址
+    serviceUrl:
+      defaultZone: http://peer1:1111/eureka/
+
+spring:
+  application:
+    name: eureka-server2
