@@ -13,9 +13,13 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
-  # 注册eureka的应用名
   instance:
+    # 注册eureka的应用名
     appname: hello-service
+    # 服务续约任务间隔：默认30s
+    lease-renewal-interval-in-seconds: 30
+    # 服务失效时间：默认90s
+    lease-expiration-duration-in-seconds: 90
 
 # actuator info端点信息，访问URI：/actuator/info
 info:

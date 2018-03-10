@@ -11,8 +11,12 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
-  # 注册eureka的应用名
+    # 是否获取服务：默认true
+    fetch-registry: true
+    # 消费者缓存清单更新时间：默认30s
+    registry-fetch-interval-seconds: 30
   instance:
+    # 注册eureka的应用名
     appname: ribbon-consumer
 
 

@@ -13,6 +13,9 @@ eureka:
     #${}方式为引用变量，这里指代Eureka服务注册地址
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    # 是否开启自我保护机制：开发环境false;正是环境true
+    enable-self-preservation: false
 
 spring:
   application:
