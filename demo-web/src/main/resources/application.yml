@@ -1,6 +1,7 @@
-# 端口
+# 端口-配成0，tomcat会随机给个端口
+#yml配置文件中的函数，例如这里配成${random.int(10,100)}，当下文引用${server.port}的时候，两个值是不一致的。会运行两次，生成两个不同的随机值
 server:
-  port: ${random.int(1000,1999)}
+  port: 0
 
 # 应用名-注册的服务名
 spring:
@@ -29,7 +30,7 @@ eureka:
     # 服务失效时间：默认90s
     lease-expiration-duration-in-seconds: 90
     # 设置实例名
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${random.int(1000,1999)}
 
 # actuator info端点信息，访问URI：/actuator/info
 info:
