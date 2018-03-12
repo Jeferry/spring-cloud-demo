@@ -1,5 +1,6 @@
 # 端口
-server.port: ${random.int(1000,1999)}
+server:
+  port: ${random.int(1000,1999)}
 
 # 应用名-注册的服务名
 spring:
@@ -28,7 +29,7 @@ eureka:
     # 服务失效时间：默认90s
     lease-expiration-duration-in-seconds: 90
     # 设置实例名
-    instance-id: ${spring.application.name}:${random.int}
+    instance-id: ${spring.application.name}:${server.port}
 
 # actuator info端点信息，访问URI：/actuator/info
 info:
@@ -36,6 +37,8 @@ info:
     name: spring-boot-hello
     version: 0.0.1-SNAPSHOT
     active: ${spring.profiles.active}
+    serverPort: ${server.port}
+    instanceId: ${eureka.instance.instance-id}
 
 # ${random} 产生随机数
 com:
