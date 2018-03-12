@@ -13,8 +13,10 @@ eureka:
   client:
     # 自定义region，一个微服务只能属于一个region。默认default
     region: default
-    # 自定义Zone，默认defaultZone。region和zone一对多，zone用,分隔
-    availability-zones: defaultZone
+    # 自定义Zone，默认defaultZone。region和zone一对多，zone为Map
+    availability-zones:
+      defaultZone1: http://peer1:1111/eureka/
+      defaultZone2: http://peer2:1112/eureka/
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
   instance:
