@@ -1,5 +1,5 @@
 # 端口
-server.port: 8081
+server.port: ${random.int(1000,1999)}
 
 # 应用名-注册的服务名
 spring:
@@ -19,13 +19,16 @@ eureka:
       defaultZone2: http://peer2:1112/eureka/
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
+#      安全起见，可以加入用户名和密码校验
+#      defaultZone: http://<userName>:<password>@peer1:1111/eureka/,http://peer2:1112/eureka/
   instance:
-    # 注册eureka的应用名
     appname: hello-service
     # 服务续约任务间隔：默认30s
     lease-renewal-interval-in-seconds: 30
     # 服务失效时间：默认90s
     lease-expiration-duration-in-seconds: 90
+    # 设置实例名
+    instance-id: ${spring.application.name}:${random.int}
 
 # actuator info端点信息，访问URI：/actuator/info
 info:
