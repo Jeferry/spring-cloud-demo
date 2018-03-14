@@ -29,7 +29,7 @@ public class RibbonConsumerController {
      */
     @RequestMapping(value = "/ribbon-consumer", method = RequestMethod.GET)
     public String helloConsumer() {
-        return restTemplate.getForEntity("http://HELLO-SERVICE/hello", String.class).getBody();
+        return restTemplate.getForObject("http://HELLO-SERVICE/hello", String.class);
     }
 
 
