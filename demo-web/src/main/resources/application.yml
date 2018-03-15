@@ -41,6 +41,17 @@ info:
     serverPort: ${server.port}
     instanceId: ${eureka.instance.instance-id}
 
+## ribbon 全局配置->ribbon.<key>=<value>
+## 全局配置 Ribbon创建链接的超时时间
+#ribbon:
+#  ConnectionTimeOut: 250
+
+# Camden版本对RibbonClient配置优化
+# 指定客户端的配置方式<client>.ribbon.<key>=<value>
+#hello-service:
+#  ribbon:
+#    NFLoadBalancerPingClassName: com.netflix.loadbalancer.PingUrl
+
 # ${random} 产生随机数
 com:
   jeferry:
