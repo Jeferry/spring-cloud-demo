@@ -1,5 +1,6 @@
 # 端口
-server.port: 9000
+server:
+  port: 9000
 
 # 应用名-注册的服务名
 spring:
