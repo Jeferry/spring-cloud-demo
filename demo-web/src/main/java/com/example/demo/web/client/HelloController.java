@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -34,7 +35,7 @@ public class HelloController {
     private DiscoveryClient client;
 
     @RequestMapping(value = "/hello", method = GET)
-    public String eurekaHello() {
+    public String eurekaHello() throws InterruptedException {
         List<String> service = client.getServices();
         logger.info("all service below:" + JSONObject.toJSONString(service));
         // eureka 现在通过serviceId获取服务，serviceId即注册服务配置文件中的${eureka.client.name}
@@ -44,6 +45,10 @@ public class HelloController {
                 printListServiceInstance(client.getInstances(serviceId));
             });
         }
+        // hystrix 默认超时时间为20000ms,这里采用随机数来模拟
+        int randomSleepTime = new Random().nextInt(3000);
+        logger.info("sleepTime:{}", randomSleepTime);
+        Thread.sleep(randomSleepTime);
         return "hello world!";
 
     }
