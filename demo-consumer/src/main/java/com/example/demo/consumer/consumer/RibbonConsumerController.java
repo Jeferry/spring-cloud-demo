@@ -33,12 +33,12 @@ public class RibbonConsumerController {
      * @return
      */
     @RequestMapping(value = "/ribbon-consumer", method = RequestMethod.GET)
-    @HystrixCommand(fallbackMethod = "helloFallback", commandKey = "helloKey")
+    @HystrixCommand(fallbackMethod = "helloFallback", commandKey = "helloKey")//设置断路器
     public String helloConsumer() {
         long start = System.currentTimeMillis();
         String result = restTemplate.getForObject("http://HELLO-SERVICE/hello", String.class);
         long end = System.currentTimeMillis();
-        logger.info("Spend time : {}", (end - start));
+        logger.info("Spend time : {} ms", (end - start));
         return result;
     }
 
