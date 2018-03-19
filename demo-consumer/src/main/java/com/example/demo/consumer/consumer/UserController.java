@@ -4,6 +4,7 @@
  */
 package com.example.demo.consumer.consumer;
 
+import com.example.demo.consumer.service.UserAnnotationService;
 import com.example.demo.consumer.service.UserCommand;
 import com.example.demo.modules.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @comment 用户控制层
  */
 @RestController
-@RequestMapping(produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/ribbon-consumer", produces = APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private UserAnnotationService userAnnotationService;
 
     /**
      * 同步调用
@@ -34,7 +37,7 @@ public class UserController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/ribbon-consumer/sync")
+    @RequestMapping(value = "/sync")
     public UserVO consumerUserSync(Long id) {
         UserCommand userCommand = new UserCommand(restTemplate, id);
         return userCommand.execute();
@@ -48,10 +51,35 @@ public class UserController {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    @RequestMapping(value = "/ribbon-consumer/async")
+    @RequestMapping(value = "/async")
     public UserVO consumerUserAsync(Long id) throws ExecutionException, InterruptedException {
         UserCommand userCommand = new UserCommand(restTemplate, id);
         return userCommand.queue().get();
+    }
+
+    /**
+     * 注解式的同步调用
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/annotation/sync")
+    public UserVO getUserSync(Long id) {
+        return userAnnotationService.getUserByIdSync(id);
+    }
+
+
+    /**
+     * 注解式的异步调用
+     *
+     * @param id
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @RequestMapping(value = "/annotation/async")
+    public UserVO getUserAsync(Long id) throws ExecutionException, InterruptedException {
+        return userAnnotationService.getUserByIdAsync(id).get();
     }
 
 
