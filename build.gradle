@@ -16,6 +16,7 @@ subprojects {
         springBootVersion = '2.0.0.RELEASE'
         springCloudVersion = 'Finchley.M8'
         springFrameWorkVersion = '5.0.4.RELEASE'
+        jacksonVersion = '2.9.2'
     }
 
     apply plugin: 'java'
@@ -43,7 +44,8 @@ subprojects {
     // 通用依赖
     dependencies {
         compile('com.alibaba:fastjson:1.2.46',
-                'org.springframework.boot:spring-boot-starter:2.0.0.RELEASE'
+                'org.springframework.boot:spring-boot-starter:2.0.0.RELEASE',
+                'com.fasterxml.jackson.core:jackson-annotations:2.9.2',
         )
     }
 

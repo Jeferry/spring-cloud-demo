@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,21 @@ public class HelloController {
 
     @RequestMapping(value = "/hello", method = GET)
     public String eurekaHello() throws InterruptedException {
+        return helloWorld();
+    }
+
+    @RequestMapping(value = "/hello/{id}")
+    public String userIdHello(@PathVariable String id) throws InterruptedException {
+        return helloWorld() + id;
+    }
+
+    private void printListServiceInstance(List<ServiceInstance> serviceInstances) {
+        if (CollectionUtils.isNotEmpty(serviceInstances)) {
+            serviceInstances.forEach(serviceInstance -> logger.info("serviceInstances:" + JSONObject.toJSONString(serviceInstances, true)));
+        }
+    }
+
+    private String helloWorld() throws InterruptedException {
         List<String> service = client.getServices();
         logger.info("all service below:" + JSONObject.toJSONString(service));
         // eureka 现在通过serviceId获取服务，serviceId即注册服务配置文件中的${eureka.client.name}
@@ -50,12 +66,5 @@ public class HelloController {
         logger.info("sleepTime:{}", randomSleepTime);
         Thread.sleep(randomSleepTime);
         return "hello world!";
-
-    }
-
-    private void printListServiceInstance(List<ServiceInstance> serviceInstances) {
-        if (CollectionUtils.isNotEmpty(serviceInstances)) {
-            serviceInstances.forEach(serviceInstance -> logger.info("serviceInstances:" + JSONObject.toJSONString(serviceInstances, true)));
-        }
     }
 }

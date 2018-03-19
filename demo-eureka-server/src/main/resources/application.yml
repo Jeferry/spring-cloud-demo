@@ -20,3 +20,7 @@ eureka:
 spring:
   application:
     name: eureka-server
+  #设置时间格式和时间地区
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8

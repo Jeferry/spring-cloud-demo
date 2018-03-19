@@ -9,6 +9,10 @@ spring:
     name: hello-service
   profiles:
     active: dev # 定义应用环境-决定加载哪个application-${spring.profiles.active}.yml配置文件
+  #设置时间格式和时间地区
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 # 指定服务注册中心地址
 eureka:
