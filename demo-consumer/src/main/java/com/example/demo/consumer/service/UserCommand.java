@@ -9,6 +9,8 @@ import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
+
 /**
  * @author maojifeng
  * @version UserCommand.java, v 0.1 maojifeng
@@ -29,5 +31,13 @@ public class UserCommand extends HystrixCommand<UserVO> {
     @Override
     protected UserVO run() {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+    }
+
+    @Override
+    protected UserVO getFallback() {
+        UserVO userVO = new UserVO();
+        userVO.setId(-1L);
+        userVO.setRegistrationTime(new Date());
+        return userVO;
     }
 }
