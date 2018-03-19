@@ -103,15 +103,18 @@ public class UserController {
         Observable<UserVO> ho = new UserCommand(restTemplate, id).observe();
 
         List<UserVO> userVOList = new ArrayList<>(16);
+        final Boolean[] completeFlag = {false};
         // subscribe
         ho.subscribe(new Observer<UserVO>() {
             @Override
             public void onCompleted() {
+                completeFlag[0] = true;
                 System.out.println(JSONObject.toJSONString(userVOList, true));
             }
 
             @Override
             public void onError(Throwable e) {
+                completeFlag[0] = true;
                 logger.error("error happened!", e);
             }
 
@@ -122,10 +125,10 @@ public class UserController {
         });
 
         //wait because execute the subscribe method is asynchronous
-        try {
-            Thread.sleep(2 * 1000);
-        } catch (InterruptedException e) {
-            logger.error("InterruptedException!", e);
+        for (; ; ) {
+            if (completeFlag[0]) {
+                break;
+            }
         }
 
         return userVOList;
@@ -143,15 +146,18 @@ public class UserController {
         // cold observable-asynchronous
         Observable<UserVO> co = new UserCommand(restTemplate, id).toObservable();
         List<UserVO> userVOList = new ArrayList<>(16);
+        final Boolean[] completeFlag = {false};
         // subscribe
         co.subscribe(new Observer<UserVO>() {
             @Override
             public void onCompleted() {
                 System.out.println(JSONObject.toJSONString(userVOList, true));
+                completeFlag[0] = true;
             }
 
             @Override
             public void onError(Throwable e) {
+                completeFlag[0] = true;
                 logger.error("error happened!", e);
             }
 
@@ -161,10 +167,11 @@ public class UserController {
             }
         });
 
-        try {
-            Thread.sleep(2 * 1000);
-        } catch (InterruptedException e) {
-            logger.error("InterruptedException!", e);
+        //wait because execute the subscribe method is asynchronous
+        for (; ; ) {
+            if (completeFlag[0]) {
+                break;
+            }
         }
 
         return userVOList;
