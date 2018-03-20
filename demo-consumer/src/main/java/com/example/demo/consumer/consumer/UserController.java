@@ -93,6 +93,8 @@ public class UserController {
 
     /**
      * hot observable 响应式执行
+     * 不论“事件源”是否有“订阅者”，都会在创建后对时间进行发布，所以 hot observable
+     * 的每一个“订阅者”都有可能是从事件源的中途开始的，并可能只看到了整个操作的局部过程。
      *
      * @param id
      * @return
@@ -137,6 +139,8 @@ public class UserController {
 
     /**
      * cold observable 响应式执行
+     * cold observable 在没有“订阅者”的时候并不会发布事件，而是进行等待，直到有“订阅者”后才进行发布，
+     * 所以对于 cold observable 的“订阅者”，它可以保证从一开始看到整个操作的全部过程。
      *
      * @param id
      * @return
