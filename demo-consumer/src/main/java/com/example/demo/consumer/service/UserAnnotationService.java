@@ -6,10 +6,12 @@ package com.example.demo.consumer.service;
 
 import com.example.demo.modules.UserVO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import rx.Observable;
 
 import java.util.concurrent.Future;
 
@@ -33,7 +35,7 @@ public class UserAnnotationService {
      */
     @HystrixCommand
     public UserVO getUserByIdSync(Long id) {
-        return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+        return wrapperRequest(id);
     }
 
     /**
@@ -47,9 +49,37 @@ public class UserAnnotationService {
         return new AsyncResult<UserVO>() {
             @Override
             public UserVO invoke() {
-                return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+                return wrapperRequest(id);
             }
         };
+    }
+
+    /**
+     * 注解式响应式命令
+     * EAGER表示使用toObserve()执行方式 hot observable
+     * Lazy表示使用toObservable()执行方式 cold observable
+     *
+     * @param id
+     * @return
+     */
+    @HystrixCommand(observableExecutionMode = ObservableExecutionMode.EAGER)
+//    @HystrixCommand(observableExecutionMode = ObservableExecutionMode.LAZY)
+    public Observable<UserVO> getUserObservableById(final Long id) {
+        return Observable.create(subscriber -> {
+            try {
+                if (!subscriber.isUnsubscribed()) {
+                    UserVO userVO = wrapperRequest(id);
+                    subscriber.onNext(userVO);
+                    subscriber.onCompleted();
+                }
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
+    }
+
+    private UserVO wrapperRequest(final Long id) {
+        return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
     }
 
 }

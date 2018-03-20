@@ -15,7 +15,7 @@ import java.util.Date;
  * @author maojifeng
  * @version UserCommand.java, v 0.1 maojifeng
  * @date 2018/3/19 11:13
- * @comment 用户请求封装
+ * @comment 用户请求封装-只能发射一次
  */
 public class UserCommand extends HystrixCommand<UserVO> {
 
@@ -23,7 +23,7 @@ public class UserCommand extends HystrixCommand<UserVO> {
     private Long id;
 
     public UserCommand(RestTemplate restTemplate, Long id) {
-        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ribbon")));
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ribbon-hystrixCommand")));
         this.restTemplate = restTemplate;
         this.id = id;
     }
@@ -33,9 +33,15 @@ public class UserCommand extends HystrixCommand<UserVO> {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
     }
 
+    /**
+     * 定义服务降级
+     *
+     * @return
+     */
     @Override
     protected UserVO getFallback() {
         UserVO userVO = new UserVO();
+        //negative Integer means failed
         userVO.setId(-1L);
         userVO.setRegistrationTime(new Date());
         return userVO;
