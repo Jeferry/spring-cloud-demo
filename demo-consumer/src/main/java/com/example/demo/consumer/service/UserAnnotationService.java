@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import rx.Observable;
 
+import java.util.Date;
 import java.util.concurrent.Future;
 
 /**
@@ -33,7 +34,7 @@ public class UserAnnotationService {
      * @param id
      * @return
      */
-    @HystrixCommand
+    @HystrixCommand(fallbackMethod = "defaultUserVO")
     public UserVO getUserByIdSync(Long id) {
         return wrapperRequest(id);
     }
@@ -80,6 +81,27 @@ public class UserAnnotationService {
 
     private UserVO wrapperRequest(final Long id) {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+    }
+
+    /**
+     * 服务降级实现
+     * 也有可能再次失败，所以定义defaultUserVOSec
+     *
+     * @return
+     */
+    @HystrixCommand(defaultFallback = "defaultUserVOSec")
+    private UserVO defaultUserVO() {
+        UserVO userVO = new UserVO();
+        userVO.setId(-2L);
+        userVO.setRegistrationTime(new Date());
+        return userVO;
+    }
+
+    private UserVO defaultUserVOSec() {
+        UserVO userVO = new UserVO();
+        userVO.setId(-3L);
+        userVO.setRegistrationTime(new Date());
+        return userVO;
     }
 
 }
