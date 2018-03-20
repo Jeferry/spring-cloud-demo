@@ -39,7 +39,8 @@ public class UserAnnotationService {
      * @param id
      * @return
      */
-    @HystrixCommand(fallbackMethod = "defaultUserVO")
+    @HystrixCommand(groupKey = "ribbon-annotation", commandKey = "getUserByIdSync", threadPoolKey = "getUserByIdSyncThread",
+            fallbackMethod = "defaultUserVO")
     public UserVO getUserByIdSync(Long id) {
         return wrapperRequest(id);
     }
