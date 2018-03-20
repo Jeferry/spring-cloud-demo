@@ -4,10 +4,13 @@
  */
 package com.example.demo.consumer.service;
 
+import com.example.demo.commons.exception.DemoException;
 import com.example.demo.modules.UserVO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +28,8 @@ import java.util.concurrent.Future;
 @Service
 public class UserAnnotationService {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -41,11 +46,15 @@ public class UserAnnotationService {
 
     /**
      * 异步方法
+     * 异常传播：
+     * 除了 HystrixBadRequestException 之外，其余异常均会被 Hystrix 认为命令执行失败，从而触发服务降级
+     * ignoreExceptions 的实现方式为：当 getUserByIdAsync 方法抛出类型为 DemoException 的异常时，Hystrix
+     * 会将它包装在 HystrixBadRequestException 中抛出，从而实现异常忽略，不触发后续的fallback
      *
      * @param id
      * @return
      */
-    @HystrixCommand
+    @HystrixCommand(ignoreExceptions = {DemoException.class})
     public Future<UserVO> getUserByIdAsync(final Long id) {
         return new AsyncResult<UserVO>() {
             @Override
@@ -97,7 +106,13 @@ public class UserAnnotationService {
         return userVO;
     }
 
-    private UserVO defaultUserVOSec() {
+    /**
+     * 在 fallback 方法中定义 Throwable 即可获取触发降级服务的异常
+     * @param throwable
+     * @return
+     */
+    private UserVO defaultUserVOSec(Throwable throwable) {
+        logger.error("error happened:", throwable);
         UserVO userVO = new UserVO();
         userVO.setId(-3L);
         userVO.setRegistrationTime(new Date());
