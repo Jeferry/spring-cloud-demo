@@ -72,7 +72,7 @@ public class UserAnnotationService {
      * @param id
      * @return
      */
-    @HystrixCommand(observableExecutionMode = ObservableExecutionMode.EAGER)
+    @HystrixCommand(observableExecutionMode = ObservableExecutionMode.EAGER, defaultFallback = "defaultUserVO")
 //    @HystrixCommand(observableExecutionMode = ObservableExecutionMode.LAZY)
     public Observable<UserVO> getUserObservableById(final Long id) {
         return Observable.create(subscriber -> {
@@ -108,6 +108,7 @@ public class UserAnnotationService {
 
     /**
      * 在 fallback 方法中定义 Throwable 即可获取触发降级服务的异常
+     *
      * @param throwable
      * @return
      */

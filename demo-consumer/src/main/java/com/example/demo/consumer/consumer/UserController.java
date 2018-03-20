@@ -21,6 +21,7 @@ import rx.Observer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -169,18 +170,18 @@ public class UserController {
     private List<UserVO> executeObserve(Observable<UserVO> observable) {
         List<UserVO> userVOList = new ArrayList<>(16);
         if (observable != null) {
-            final Boolean[] completeFlag = {false};
+            AtomicBoolean completeFlag = new AtomicBoolean(false);
             // subscribe
             observable.subscribe(new Observer<UserVO>() {
                 @Override
                 public void onCompleted() {
-                    completeFlag[0] = true;
+                    completeFlag.set(true);
                     System.out.println(JSONObject.toJSONString(userVOList, true));
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    completeFlag[0] = true;
+                    completeFlag.set(true);
                     logger.error("error happened!", e);
                 }
 
@@ -192,7 +193,7 @@ public class UserController {
 
             //wait because execute the subscribe method is asynchronous
             for (; ; ) {
-                if (completeFlag[0]) {
+                if (completeFlag.get()) {
                     break;
                 }
             }
