@@ -9,6 +9,7 @@ import com.example.demo.consumer.service.UserAnnotationService;
 import com.example.demo.consumer.service.UserCommand;
 import com.example.demo.consumer.service.UserObservableCommand;
 import com.example.demo.modules.UserVO;
+import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,28 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/sync")
-    public UserVO consumerUserSync(Long id) {
-        UserCommand userCommand = new UserCommand(restTemplate, id);
-        return userCommand.execute();
+    public List<UserVO> consumerUserSync(Long id) {
+        //HystrixRequestContext 上下文初始化
+        HystrixRequestContext context = HystrixRequestContext.initializeContext();
+
+        List<UserVO> userVOS = new ArrayList<>(8);
+
+        try {
+            UserCommand userCommand1 = new UserCommand(restTemplate, id);
+            UserCommand userCommand2 = new UserCommand(restTemplate, id + 1);
+            UserCommand userCommand5 = new UserCommand(restTemplate, id);
+            UserCommand userCommand3 = new UserCommand(restTemplate, id + 2);
+            UserCommand userCommand4 = new UserCommand(restTemplate, id + 1);
+            userVOS.add(userCommand1.execute());
+            userVOS.add(userCommand2.execute());
+            userVOS.add(userCommand3.execute());
+            userVOS.add(userCommand4.execute());
+            userVOS.add(userCommand5.execute());
+            return userVOS;
+        } finally {
+            // 上下文关闭
+            context.shutdown();
+        }
     }
 
     /**

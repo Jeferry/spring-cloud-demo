@@ -8,7 +8,9 @@ import com.example.demo.modules.UserVO;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixRequestCache;
 import com.netflix.hystrix.HystrixThreadPoolKey;
+import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategyDefault;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
@@ -21,6 +23,10 @@ import java.util.Date;
  */
 public class UserCommand extends HystrixCommand<UserVO> {
 
+    /**
+     * 缓存 HystrixCommandKey
+     */
+    private static final HystrixCommandKey GETTER_KEY = HystrixCommandKey.Factory.asKey("userGetCommandKey");
     private RestTemplate restTemplate;
     private Long id;
 
@@ -34,15 +40,18 @@ public class UserCommand extends HystrixCommand<UserVO> {
      */
     public UserCommand(RestTemplate restTemplate, Long id) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ribbon-hystrixCommand"))
-                .andCommandKey(HystrixCommandKey.Factory.asKey("userCommand"))
-                .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("ThreadPoolKey")));
+                .andCommandKey(GETTER_KEY).andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("ThreadPoolKey")));
         this.restTemplate = restTemplate;
         this.id = id;
     }
 
     @Override
     protected UserVO run() {
-        return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+        //1、写操作
+        UserVO userVO = restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+        //2、刷新缓存
+//        UserCommand.flushCache(id);
+        return userVO;
     }
 
     /**
@@ -57,5 +66,27 @@ public class UserCommand extends HystrixCommand<UserVO> {
         userVO.setId(-1L);
         userVO.setRegistrationTime(new Date());
         return userVO;
+    }
+
+    /**
+     * 根据Id置入缓存
+     * 会在run()和construct()方法之前执行
+     *
+     * @return
+     */
+    @Override
+    protected String getCacheKey() {
+        return String.valueOf(id);
+    }
+
+    /**
+     * 根据id,清除缓存
+     * https://github.com/Netflix/Hystrix/wiki/How-To-Use#Caching
+     *
+     * @param id
+     */
+    public static void flushCache(Long id) {
+        HystrixRequestCache.getInstance(GETTER_KEY, HystrixConcurrencyStrategyDefault.getInstance())
+                .clear(String.valueOf(id));
     }
 }
