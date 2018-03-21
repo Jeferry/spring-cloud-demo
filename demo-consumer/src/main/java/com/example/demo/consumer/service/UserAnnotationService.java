@@ -8,6 +8,9 @@ import com.example.demo.commons.exception.DemoException;
 import com.example.demo.modules.UserVO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheKey;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheRemove;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +38,12 @@ public class UserAnnotationService {
 
     /**
      * 同步方法
+     * 如果定义了 cacheKeyMethod 则 CacheKey 注解不生效
      *
      * @param id
      * @return
      */
+    @CacheResult(cacheKeyMethod = "getUserCacheKey")
     @HystrixCommand(groupKey = "ribbon-annotation", commandKey = "getUserByIdSync", threadPoolKey = "getUserByIdSyncThread",
             fallbackMethod = "defaultUserVO")
     public UserVO getUserByIdSync(Long id) {
@@ -55,8 +60,9 @@ public class UserAnnotationService {
      * @param id
      * @return
      */
+    @CacheResult
     @HystrixCommand(ignoreExceptions = {DemoException.class})
-    public Future<UserVO> getUserByIdAsync(final Long id) {
+    public Future<UserVO> getUserByIdAsync(@CacheKey final Long id) {
         return new AsyncResult<UserVO>() {
             @Override
             public UserVO invoke() {
@@ -91,16 +97,18 @@ public class UserAnnotationService {
 
     private UserVO wrapperRequest(final Long id) {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+
     }
 
     /**
      * 服务降级实现
      * 也有可能再次失败，所以定义defaultUserVOSec
      *
+     * @param id fallback方法入参必须包含原方法的所有入参
      * @return
      */
     @HystrixCommand(defaultFallback = "defaultUserVOSec")
-    private UserVO defaultUserVO() {
+    private UserVO defaultUserVO(Long id) {
         UserVO userVO = new UserVO();
         userVO.setId(-2L);
         userVO.setRegistrationTime(new Date());
@@ -110,15 +118,37 @@ public class UserAnnotationService {
     /**
      * 在 fallback 方法中定义 Throwable 即可获取触发降级服务的异常
      *
+     * @param id
      * @param throwable
      * @return
      */
-    private UserVO defaultUserVOSec(Throwable throwable) {
+    private UserVO defaultUserVOSec(Long id, Throwable throwable) {
         logger.error("error happened:", throwable);
         UserVO userVO = new UserVO();
         userVO.setId(-3L);
         userVO.setRegistrationTime(new Date());
         return userVO;
+    }
+
+    /**
+     * 自定义cache key
+     *
+     * @param id
+     * @return CacheKey must String
+     */
+    private String getUserCacheKey(Long id) {
+        return String.valueOf(id);
+    }
+
+    /**
+     * remove cache
+     *
+     * @param id
+     */
+    @CacheRemove(commandKey = "getUserByIdAsync")
+    @HystrixCommand
+    public void removeCache(@CacheKey Long id) {
+        //if update something should remove cache key
     }
 
 }

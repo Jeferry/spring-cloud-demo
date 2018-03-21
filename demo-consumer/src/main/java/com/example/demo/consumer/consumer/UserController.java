@@ -9,7 +9,6 @@ import com.example.demo.consumer.service.UserAnnotationService;
 import com.example.demo.consumer.service.UserCommand;
 import com.example.demo.consumer.service.UserObservableCommand;
 import com.example.demo.modules.UserVO;
-import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,26 +50,19 @@ public class UserController {
      */
     @RequestMapping(value = "/sync")
     public List<UserVO> consumerUserSync(Long id) {
-        //HystrixRequestContext 上下文初始化
-        HystrixRequestContext context = HystrixRequestContext.initializeContext();
-
         List<UserVO> userVOS = new ArrayList<>(8);
 
-        try {
-            UserCommand userCommand1 = new UserCommand(restTemplate, id);
-            UserCommand userCommand2 = new UserCommand(restTemplate, id + 1);
-            UserCommand userCommand3 = new UserCommand(restTemplate, id + 2);
-            UserCommand userCommand4 = new UserCommand(restTemplate, id + 1);
-            UserCommand userCommand5 = new UserCommand(restTemplate, id);
-            userVOS.add(userCommand1.execute());
-            userVOS.add(userCommand2.execute());
-            userVOS.add(userCommand3.execute());
-            userVOS.add(userCommand4.execute());
-            userVOS.add(userCommand5.execute());
-        } finally {
-            // 上下文关闭
-            context.shutdown();
-        }
+        UserCommand userCommand1 = new UserCommand(restTemplate, id);
+        UserCommand userCommand2 = new UserCommand(restTemplate, id + 1);
+        UserCommand userCommand3 = new UserCommand(restTemplate, id + 2);
+        UserCommand userCommand4 = new UserCommand(restTemplate, id + 1);
+        UserCommand userCommand5 = new UserCommand(restTemplate, id);
+        userVOS.add(userCommand1.execute());
+        userVOS.add(userCommand2.execute());
+        userVOS.add(userCommand3.execute());
+        userVOS.add(userCommand4.execute());
+        userVOS.add(userCommand5.execute());
+
         return userVOS;
     }
 
@@ -121,8 +113,14 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/annotation/sync")
-    public UserVO getUserSync(Long id) {
-        return userAnnotationService.getUserByIdSync(id);
+    public List<UserVO> getUserSync(Long id) {
+        List<UserVO> result = new ArrayList<>(16);
+        result.add(userAnnotationService.getUserByIdSync(id));
+        result.add(userAnnotationService.getUserByIdSync(id + 1));
+        result.add(userAnnotationService.getUserByIdSync(id + 2));
+        result.add(userAnnotationService.getUserByIdSync(id + 1));
+        result.add(userAnnotationService.getUserByIdSync(id));
+        return result;
     }
 
 
@@ -135,8 +133,16 @@ public class UserController {
      * @throws InterruptedException
      */
     @RequestMapping(value = "/annotation/async")
-    public UserVO getUserAsync(Long id) throws ExecutionException, InterruptedException {
-        return userAnnotationService.getUserByIdAsync(id).get();
+    public List<UserVO> getUserAsync(Long id) throws ExecutionException, InterruptedException {
+        List<UserVO> result = new ArrayList<>(16);
+        result.add(userAnnotationService.getUserByIdAsync(id).get());
+        result.add(userAnnotationService.getUserByIdAsync(id + 1).get());
+        result.add(userAnnotationService.getUserByIdAsync(id + 2).get());
+        result.add(userAnnotationService.getUserByIdAsync(id + 1).get());
+        // remove cache key
+        userAnnotationService.removeCache(id);
+        result.add(userAnnotationService.getUserByIdAsync(id).get());
+        return result;
     }
 
     /**
