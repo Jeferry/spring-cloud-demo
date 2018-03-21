@@ -32,7 +32,7 @@ public class UserController {
 
     @RequestMapping(value = "/users")
     public List<UserVO> getUserList(Long[] ids) {
-        logger.info("request from /users?id={ids}", JSONObject.toJSONString(ids));
+        logger.info("request from /users?id={}", JSONObject.toJSONString(ids));
         List<UserVO> result = new ArrayList<>(8);
         for (Long id : ids) {
             result.add(wrapperGetUser(id));
