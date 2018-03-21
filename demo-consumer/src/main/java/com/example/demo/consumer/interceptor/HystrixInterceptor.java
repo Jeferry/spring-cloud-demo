@@ -24,7 +24,7 @@ public class HystrixInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // HystrixRequestContext 上下文初始化
+        // HystrixRequestContext initializing
         context.set(HystrixRequestContext.initializeContext());
         return true;
     }

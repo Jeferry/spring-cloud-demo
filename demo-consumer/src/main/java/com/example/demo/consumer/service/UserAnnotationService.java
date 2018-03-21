@@ -12,6 +12,7 @@ import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheKey;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheRemove;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import rx.Observable;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -95,8 +97,33 @@ public class UserAnnotationService {
         });
     }
 
+    /**
+     * 原生实现，查询单个，任何注解
+     *
+     * @param id
+     * @return
+     */
+    public UserVO find(Long id) {
+        return wrapperRequest(id);
+    }
+
+    /**
+     * 原生实现，批量查询，无任何注解
+     *
+     * @param ids
+     * @return
+     */
+    public List<UserVO> findAll(List<Long> ids) {
+        return wrapperRequestForList(ids);
+    }
+
     private UserVO wrapperRequest(final Long id) {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
+
+    }
+
+    private List<UserVO> wrapperRequestForList(final List<Long> ids) {
+        return restTemplate.getForObject("http://HELLO-SERVICE/users?ids={ids}", List.class, StringUtils.join(ids, ","));
 
     }
 
