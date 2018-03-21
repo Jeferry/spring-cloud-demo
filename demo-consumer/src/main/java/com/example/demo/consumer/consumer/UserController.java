@@ -59,19 +59,19 @@ public class UserController {
         try {
             UserCommand userCommand1 = new UserCommand(restTemplate, id);
             UserCommand userCommand2 = new UserCommand(restTemplate, id + 1);
-            UserCommand userCommand5 = new UserCommand(restTemplate, id);
             UserCommand userCommand3 = new UserCommand(restTemplate, id + 2);
             UserCommand userCommand4 = new UserCommand(restTemplate, id + 1);
+            UserCommand userCommand5 = new UserCommand(restTemplate, id);
             userVOS.add(userCommand1.execute());
             userVOS.add(userCommand2.execute());
             userVOS.add(userCommand3.execute());
             userVOS.add(userCommand4.execute());
             userVOS.add(userCommand5.execute());
-            return userVOS;
         } finally {
             // 上下文关闭
             context.shutdown();
         }
+        return userVOS;
     }
 
     /**

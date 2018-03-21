@@ -49,8 +49,10 @@ public class UserCommand extends HystrixCommand<UserVO> {
     protected UserVO run() {
         //1、写操作
         UserVO userVO = restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
-        //2、刷新缓存
-//        UserCommand.flushCache(id);
+        //2、id为2的倍数，刷新缓存
+        if (id % 2 == 0) {
+            UserCommand.flushCache(id);
+        }
         return userVO;
     }
 
