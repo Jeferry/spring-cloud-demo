@@ -24,8 +24,8 @@ subprojects {
 //    apply plugin: 'eclipse'
 
     // 在这个段落中你可以声明源文件和目标编译后的Java版本兼容性
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 9
+    targetCompatibility = 9
 
     // java编译的时候缺省状态下会因为中文字符而失败
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
