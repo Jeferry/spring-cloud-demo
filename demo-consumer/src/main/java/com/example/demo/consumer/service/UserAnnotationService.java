@@ -6,7 +6,9 @@ package com.example.demo.consumer.service;
 
 import com.example.demo.commons.exception.DemoException;
 import com.example.demo.modules.UserVO;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCollapser;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheKey;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheRemove;
@@ -103,8 +105,11 @@ public class UserAnnotationService {
      * @param id
      * @return
      */
-    public UserVO find(Long id) {
-        return wrapperRequest(id);
+    @HystrixCollapser(batchMethod = "findFutureAll", collapserProperties = {
+            @HystrixProperty(name = "timerDelayInMilliseconds", value = "100")
+    })
+    public Future<UserVO> find(Long id) {
+        return null;
     }
 
     /**
@@ -117,11 +122,28 @@ public class UserAnnotationService {
         return wrapperRequestForList(ids);
     }
 
+    @HystrixCommand
+    public List<UserVO> findFutureAll(List<Long> ids) {
+        return wrapperRequestForList(ids);
+    }
+
+    /**
+     * 请求单个 UserVO 包装方法
+     *
+     * @param id
+     * @return
+     */
     private UserVO wrapperRequest(final Long id) {
         return restTemplate.getForObject("http://HELLO-SERVICE/users/{id}", UserVO.class, id);
 
     }
 
+    /**
+     * 批量请求 List<UserVO> 包装方法
+     *
+     * @param ids
+     * @return
+     */
     private List<UserVO> wrapperRequestForList(final List<Long> ids) {
         return restTemplate.getForObject("http://HELLO-SERVICE/users?ids={ids}", List.class, StringUtils.join(ids, ","));
 

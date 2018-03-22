@@ -10,10 +10,6 @@ import com.example.demo.consumer.service.UserCommand;
 import com.example.demo.consumer.service.UserObservableCommand;
 import com.example.demo.consumer.service.collapse.UserCollapseCommand;
 import com.example.demo.modules.UserVO;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixEventType;
-import com.netflix.hystrix.HystrixInvokableInfo;
-import com.netflix.hystrix.HystrixRequestLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,19 +207,26 @@ public class UserController {
         for (Future<UserVO> userVOFuture : futureList) {
             result.add(userVOFuture.get());
         }
-        // assert that the batch command 'UserBatchCommand' was in fact
-        // executed and that it executed only once
-        assert HystrixRequestLog.getCurrentRequest().getAllExecutedCommands().size() == 1;
-        logger.info("all executedCommand:{}", HystrixRequestLog.getCurrentRequest().getExecutedCommandsAsString());
-        HystrixInvokableInfo<?> invokableInfo = HystrixRequestLog.getCurrentRequest().getAllExecutedCommands().toArray(new HystrixInvokableInfo<?>[1])[0];
-        // assert the command is the one we're expecting
-        assert invokableInfo.getCommandKey().name().equals("UserBatchCommand");
-        // confirm that it was a COLLAPSED command execution
-        assert invokableInfo.getExecutionEvents().contains(HystrixEventType.COLLAPSED);
-        // and that it was successful
-        assert invokableInfo.getExecutionEvents().contains(HystrixEventType.SUCCESS);
         return result;
     }
+
+    /**
+     * Collapse方式查询UserVO,以节省线程池开销
+     * 注解式方式
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "/annotationCollapse")
+    public List<UserVO> getUserCollapseByAnnotation(@RequestParam("ids") List<Long> ids) throws ExecutionException, InterruptedException {
+        List<Future<UserVO>> futureList = ids.stream().map(id -> userAnnotationService.find(id)).collect(Collectors.toList());
+        List<UserVO> result = new ArrayList<>((int) (ids.size() / 0.75 + 1));
+        for (Future<UserVO> userVOFuture : futureList) {
+            result.add(userVOFuture.get());
+        }
+        return result;
+    }
+
 
     /**
      * 观察者-订阅执行
