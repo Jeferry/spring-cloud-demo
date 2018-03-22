@@ -2,7 +2,7 @@
  * YOUTU SOFTWARE Inc.
  * Copyright (c) 2016-2018 All Rights Reserved.
  */
-package com.example.demo.consumer.interceptor;
+package com.example.demo.consumer.filter;
 
 import com.netflix.hystrix.HystrixInvokableInfo;
 import com.netflix.hystrix.HystrixRequestLog;
@@ -10,41 +10,49 @@ import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
  * @author maojifeng
- * @version HystrixInterceptor.java, v 0.1 maojifeng
- * @date 2018/3/21 13:53
- * @comment HystrixRequestContext initializing through this interceptor
+ * @version HystrixRequestContextFilter.java, v 0.1 maojifeng
+ * @date 2018/3/22 18:00
+ * @comment Hystrix请求上下文初始化过滤器
  */
 @Component
-public class HystrixInterceptor extends HandlerInterceptorAdapter {
+@WebFilter(urlPatterns = "/ribbon-consumer/*")
+public class HystrixRequestContextFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ThreadLocal<HystrixRequestContext> context = ThreadLocal.withInitial(HystrixRequestContext::initializeContext);
-
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // HystrixRequestContext initializing
-        context.set(HystrixRequestContext.initializeContext());
-        return true;
+    public void init(FilterConfig filterConfig) {
+
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // get request log
-        getHystrixRequestLog();
-        HystrixRequestContext hystrixRequestContext = context.get();
-        if (hystrixRequestContext != null) {
-            hystrixRequestContext.shutdown();
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HystrixRequestContext context = HystrixRequestContext.initializeContext();
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            getHystrixRequestLog();
+            context.shutdown();
         }
-        context.remove();
+
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     private void getHystrixRequestLog() {

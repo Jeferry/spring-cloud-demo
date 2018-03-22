@@ -24,6 +24,6 @@ public class WebMvcDemoConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(hystrixInterceptor).addPathPatterns("/ribbon-consumer/**");
+//        registry.addInterceptor(hystrixInterceptor).addPathPatterns("/ribbon-consumer/**");
     }
 }
