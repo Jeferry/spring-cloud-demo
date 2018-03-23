@@ -8,4 +8,10 @@
  */
 
 rootProject.name = 'spring-cloud-demo'
-include 'demo-consumer','demo-eureka-server', 'demo-web', 'demo-modules', 'demo-biz', 'demo-commons'
+include 'demo-consumer',
+        'demo-eureka-server',
+        'demo-web',
+        'demo-modules',
+        'demo-biz',
+        'demo-commons',
+        'demo-hystrix-dashboard'

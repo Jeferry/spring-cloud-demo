@@ -22,6 +22,8 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
     // 服务容错保护 1.5版本名为spring-cloud-starter-hystrix
     compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
+    // 监控管理
+    compile('org.springframework.boot:spring-boot-starter-actuator')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

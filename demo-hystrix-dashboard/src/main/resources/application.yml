@@ -1,0 +1,8 @@
+# 端口
+server:
+  port: 2001
+
+# 应用名-注册的服务名
+spring:
+  application:
+    name: hystrix-dashboard
