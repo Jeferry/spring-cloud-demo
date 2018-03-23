@@ -27,9 +27,17 @@ public class UserCollapseCommand extends HystrixCollapser<List<UserVO>, UserVO, 
      * @param id
      */
     public UserCollapseCommand(UserAnnotationService userAnnotationService, Long id) {
-        // 设置合并请求的延迟为100ms
+        // Setter 初始化
         super(Setter.withCollapserKey(HystrixCollapserKey.Factory.asKey("userCollapseCommand"))
-                .andCollapserPropertiesDefaults(HystrixCollapserProperties.Setter().withTimerDelayInMilliseconds(100)));
+                .andCollapserPropertiesDefaults(HystrixCollapserProperties.Setter()
+                        // 设置合并批处理请求允许的最大请求数
+                        .withMaxRequestsInBatch(Integer.MAX_VALUE)
+                        // 设置合并请求的延迟为10ms——默认10ms
+                        .withTimerDelayInMilliseconds(10)
+                        // 开启缓存请求——默认true
+                        .withRequestCacheEnabled(true)
+
+                ));
         this.userAnnotationService = userAnnotationService;
         this.id = id;
     }

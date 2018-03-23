@@ -100,8 +100,10 @@ public class UserAnnotationService {
     }
 
     /**
-     * 原生实现，查询单个，任何注解
+     * 请求合并，适用于高延迟的命令，比如本例的 http 请求
+     * 如果窗口时间 timerDelayInMilliseconds 只有 1~2 个请求，这样不适合使用请求并发器。
      *
+     * 通过 collapserProperties 和 @HystrixProperty 实现属性的设置
      * @param id
      * @return
      */
