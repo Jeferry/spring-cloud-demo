@@ -14,4 +14,5 @@ include 'demo-consumer',
         'demo-modules',
         'demo-biz',
         'demo-commons',
-        'demo-hystrix-dashboard'
+        'demo-hystrix-dashboard',
+        'demo-turbine'

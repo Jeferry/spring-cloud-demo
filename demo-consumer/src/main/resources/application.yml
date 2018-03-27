@@ -1,6 +1,6 @@
 # 端口
 server:
-  port: 9000
+  port: 0
 
 # 应用名-注册的服务名
 spring:
@@ -31,6 +31,8 @@ eureka:
     # 手动指定区域 2.0版本由原先的String升级为Map<String,String>,key有待研究
 #    metadata-map:
 #      default: hangzhou
+    # 设置实例名
+    instance-id: ${spring.application.name}:${random.int(1000,1999)}
 
 # 在无服务治理框架下，需要指定服务名的实例清单
 # 禁用eureka对ribbon的维护
