@@ -5,10 +5,12 @@
 package com.example.demo.feign.consumer.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.feign.consumer.service.DisableHystrixHelloService;
 import com.example.demo.feign.consumer.service.HelloService;
 import com.example.demo.feign.consumer.service.RefactorHelloService;
 import com.example.demo.modules.feign.HelloFeign;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +31,8 @@ public class ConsumerController {
     private HelloService helloService;
     @Autowired
     private RefactorHelloService refactorHelloService;
+    @Autowired
+    private DisableHystrixHelloService disableHystrixHelloService;
 
     @RequestMapping(value = "/feign-consumer", method = GET)
     public String helloConsumer() {
@@ -52,6 +56,11 @@ public class ConsumerController {
         result.put("hello5", refactorHelloService.hello("Jeferry", 18));
         result.put("hello6", refactorHelloService.hello(new HelloFeign("Jeferry", 18)));
         return result;
+    }
+
+    @RequestMapping(value = "/feign-consumer3/{id}", method = GET)
+    public String helloConsumer4(@PathVariable("id") String id) {
+        return disableHystrixHelloService.hello(id);
     }
 
 
