@@ -15,4 +15,5 @@ include 'demo-consumer',
         'demo-biz',
         'demo-commons',
         'demo-hystrix-dashboard',
-        'demo-turbine'
+        'demo-turbine',
+        'demo-feign-consumer'

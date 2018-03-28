@@ -18,6 +18,7 @@ eureka:
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
 
+# 与消息代理 RabbitMQ 结合有待后续实现
 turbine:
   # 指定需要收集监控信息的服务名
   app-config: RIBBON-CONSUMER

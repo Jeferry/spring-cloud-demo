@@ -1,0 +1,14 @@
+# 端口
+server:
+  port: 9001
+
+# 应用名-注册的服务名
+spring:
+  application:
+    name: feign-consumer
+
+# 指定服务注册中心地址
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
