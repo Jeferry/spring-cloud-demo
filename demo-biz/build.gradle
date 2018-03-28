@@ -13,4 +13,6 @@ buildscript {
 
 dependencies {
     compile project(':demo-modules')
+    // Spring MVC 注解需要引入的包
+    compile('org.springframework:spring-web:5.0.4.RELEASE')
 }
