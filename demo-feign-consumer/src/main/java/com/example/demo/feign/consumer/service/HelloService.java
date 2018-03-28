@@ -9,6 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -38,7 +39,7 @@ public interface HelloService {
      * @return
      */
     @RequestMapping(value = "/hello1", method = GET)
-    String hello(@RequestHeader("name") String name);
+    String hello(@RequestParam("name") String name);
 
     /**
      * 调用 hello-service 服务的 /hello2 url
