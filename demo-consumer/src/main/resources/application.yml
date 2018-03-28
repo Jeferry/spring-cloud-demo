@@ -36,12 +36,12 @@ eureka:
 
 # 在无服务治理框架下，需要指定服务名的实例清单
 # 禁用eureka对ribbon的维护
-ribbon:
-  eureka:
-    enable: false
-hello-service:
-  ribbon:
-    listOfServers: localhost:63475,localhost:63484
+#ribbon:
+#  eureka:
+#    enable: false
+#hello-service:
+#  ribbon:
+#    listOfServers: localhost:63475,localhost:63484
 #    # 重试机制配置
 #    # 请求连接的超时时间
 #    ConnectTimeout: 250
@@ -55,13 +55,13 @@ hello-service:
 #    MaxAutoRetries: 1
 
 # 断路器超时时间需要大于Ribbon的超时时间，不然不会触发重试
-hypermedia:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
+#hypermedia:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 10000
 
 
 
