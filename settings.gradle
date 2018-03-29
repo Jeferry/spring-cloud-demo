@@ -16,4 +16,5 @@ include 'demo-consumer',
         'demo-commons',
         'demo-hystrix-dashboard',
         'demo-turbine',
-        'demo-feign-consumer'
+        'demo-feign-consumer',
+        'demo-api-gateway'
