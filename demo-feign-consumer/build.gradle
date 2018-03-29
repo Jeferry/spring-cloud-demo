@@ -20,6 +20,8 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
     // feign
     compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+    // 服务容错保护 1.5版本名为spring-cloud-starter-hystrix
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

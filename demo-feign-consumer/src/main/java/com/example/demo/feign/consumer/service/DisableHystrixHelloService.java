@@ -4,7 +4,6 @@
  */
 package com.example.demo.feign.consumer.service;
 
-import com.example.demo.feign.consumer.config.DisableHystrixConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author maojifeng
  * @version DisableHystrixHelloService.java, v 0.1 maojifeng
  * @date 2018/3/28 17:56
- * @comment 关闭Hystrix的Feign
+ * @comment 关闭Hystrix的Feign，需要配置@FeignClient中的configuration
  */
-@FeignClient(name = "HELLO-SERVICE", configuration = DisableHystrixConfiguration.class)
+@FeignClient(name = "HELLO-SERVICE"/*, configuration = DisableHystrixConfiguration.class*/)
 public interface DisableHystrixHelloService {
 
     /**

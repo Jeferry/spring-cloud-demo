@@ -12,3 +12,9 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
+
+feign:
+  hystrix:
+    # 开启 Hystrix 的功能
+    # 因为在 feign 默认配置中，该功能是关闭的，会导致 @FeignClient 中配置的 fallback 不起作用
+    enabled: true
