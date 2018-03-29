@@ -21,6 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * 2、打开 hystrix 的支持，配置文件中设置：feign.hystrix.enable=true 还有为什么Feign对Hystrix的支持默认是关闭状态的原因讨论：https://github.com/spring-cloud/spring-cloud-netflix/issues/1277
  * 3、启动类加上开启断路器功能注解 @EnableCircuitBreaker
  * 4、配置 fallback 方法，里面的类必须是接口的实现类，且被标识成组件 @Component
+ * 5、Feign.Builder 没有被重写
  *
  * @author maojifeng
  * @version HelloService.java, v 0.1 maojifeng
