@@ -18,3 +18,20 @@ feign:
     # 开启 Hystrix 的功能
     # 因为在 feign 默认配置中，该功能是关闭的，会导致 @FeignClient 中配置的 fallback 不起作用
     enabled: true
+  compression:
+    request:
+      # 开启请求压缩
+      enable: true
+      # 指定请求类型为默认值
+      mime-types: text/html,application/xml,application/json
+      # 设置压缩需要的最小请求大小为默认值，超过该值则会进行压缩
+      min-request-size: 2048
+    response:
+      # 开启响应压缩
+      enable: true
+
+logging:
+  level:
+    # 设置 HelloService 的日志级别为 debug 级别
+    com.example.demo.feign.consumer.service.HelloService: debug
+

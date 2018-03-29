@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2018/3/28 17:56
  * @comment 关闭Hystrix的Feign，需要配置@FeignClient中的configuration
  */
-@FeignClient(name = "HELLO-SERVICE"/*, configuration = DisableHystrixConfiguration.class*/)
+@FeignClient(name = "HELLO-SERVICE"/*, configuration = FeignConfiguration.class*/)
 public interface DisableHystrixHelloService {
 
     /**

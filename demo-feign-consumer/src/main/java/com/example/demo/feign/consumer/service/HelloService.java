@@ -29,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @comment 绑定服务
  */
 // 服务名不区分大小写，所以使用 hello-service 和 HELLO-SERVICE 都是可以的。
-@FeignClient(name = "hello-service", fallback = HelloServiceFallBackImpl.class)
+@FeignClient(name = "hello-service", fallback = HelloServiceFallBackImpl.class/*, configuration = FeignConfiguration.class*/)
 public interface HelloService {
 
     /**
