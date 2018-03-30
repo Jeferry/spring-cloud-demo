@@ -40,6 +40,8 @@ eureka:
 
 # 面向服务的路由
 zuul:
+#  # 路由规则前缀
+#  prefix: /api
   routes:
     # 所有对网关/api-a/**请求，都会被转发到 hello-service 服务
     api-a:
@@ -49,7 +51,18 @@ zuul:
     api-b:
       path: /api-b/**
       serviceId: feign-consumer
+    # 跳转 Zuul 本地
+    api-c:
+      path: /api-c/**
+      url: forward:/local
+#    api-c:
+#      # 当存在多个匹配路由规则的时候，由于路由匹配规则是通过 LinkedHashMap 存储，故加载也是有序的，加载优先匹配成功的。
+#      # 本条配置不生效，若想生效，应把该配置移到上方
+#      path: /api-b/ext/**
+#      serviceId: feign-consumer1
   # zuul 忽略的服务——不希望对外开放的服务
   ignored-services: hystrix-dashboard
+#  # zuul 不希望对外提供 hello 接口
+#  ignored-patterns: /**/hello/**
 
 # 默认情况 所有对网关/${serviceId}/**请求，都会被转发到 serviceId 服务
