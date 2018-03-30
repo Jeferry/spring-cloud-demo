@@ -5,6 +5,7 @@
 package com.example.demo.api.gateway.configuration;
 
 import com.example.demo.api.gateway.filter.AccessFilter;
+import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,18 @@ public class ApiGatewayConfiguration {
     @Bean
     public AccessFilter accessFilter() {
         return new AccessFilter();
+    }
+
+    /**
+     * 自定义路由规则
+     * 把 /helloservice-v1/** 的请求重新映射成 /helloservice/v1/**
+     *
+     * @return
+     */
+    @Bean
+    public PatternServiceRouteMapper serviceRouteMapper() {
+        return new PatternServiceRouteMapper("(?<name>.*)-(?<version>v.*$)",
+                "${version}/${name}");
     }
 
 }

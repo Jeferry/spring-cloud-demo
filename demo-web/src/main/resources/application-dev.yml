@@ -3,3 +3,13 @@ book:
   name: SpringClouldInAction
   author: Jeferry
   desc: ${book.author} is writing 《${book.name}》 in dev
+
+## 应用名-注册的服务名
+#spring:
+#  application:
+#    name: helloservice-v1
+#
+#eureka:
+#  instance:
+#    # 自定义eureka 服务名，命名规则 ${serviceName}-${version}
+#    appname: helloservice-v1

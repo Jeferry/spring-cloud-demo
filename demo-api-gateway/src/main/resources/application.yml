@@ -7,20 +7,36 @@ spring:
   application:
     name: api-gateway
 
-# 指定服务注册中心地址
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
-
-
-# 传统路由方式
+## 传统路由方式
+# 单例配置模式
 #zuul:
 #  routes:
 #    # 所有对网关/api-a-url/**请求，都会被转发到http://localhost:53364/
 #    api-a-url:
 #      path: /api-a-url/**
 #      url: http://localhost:53364/
+# 多例配置模式
+#zuul:
+#  routes:
+#    # 所有对网关/api-a/**请求，都会被转发到 hello-service 服务
+#    api-a:
+#      path: /api-a/**
+#      serviceId: hello-service
+#ribbon:
+#  eureka:
+#    # 关闭 ribbon 服务发现功能
+#    enable: false
+## 手动配置 hello-service 服务&实例
+#hello-service:
+#  ribbon:
+#    listOfServices: http://localhost:8080/,http://localhost:8081/
+
+## 服务路由配置
+# 指定服务注册中心地址
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:1111/eureka/,http://peer2:1112/eureka/
 
 # 面向服务的路由
 zuul:
@@ -33,3 +49,7 @@ zuul:
     api-b:
       path: /api-b/**
       serviceId: feign-consumer
+  # zuul 忽略的服务——不希望对外开放的服务
+  ignored-services: hystrix-dashboard
+
+# 默认情况 所有对网关/${serviceId}/**请求，都会被转发到 serviceId 服务
